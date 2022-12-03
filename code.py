@@ -5,62 +5,66 @@ from sklearn import preprocessing
 from sklearn import datasets, linear_model
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn import metrics
-from sklearn.cross_validation import train_test_split
+from sklearn.model_selection import train_test_split
 from sklearn.model_selection import train_test_split
 from sklearn import neighbors
 
-data =pd.read_csv('train dataset.csv')
+# store csv in pandas dataframe
+data = pd.read_csv('train dataset.csv')
+# return numpy array representation of data
 array = data.values
 
+# use one-hot encoding for gender values
 for i in range(len(array)):
-	if array[i][0]=="Male":
-		array[i][0]=1
+	if array[i][0] == "Male":
+		array[i][0] = 1
 	else:
-		array[i][0]=0
+		array[i][0] = 0
 
+# convert to pandas dataframe
+df = pd.DataFrame(array)
+# print(df)
 
-df=pd.DataFrame(array)
+# remove results from dataframe
+# and assign to maindf
+maindf = df[[0, 1, 2, 3, 4, 5, 6]]
+print(maindf)
+# store as an array
+mainarray = maindf.values
+print(mainarray)
 
-maindf =df[[0,1,2,3,4,5,6]]
-mainarray=maindf.values
-print (mainarray)
-
-
-temp=df[7]
-train_y =temp.values
+# todo
+temp = df[7]
+train_y = temp.values
 # print(train_y)
 # print(mainarray)
-train_y=temp.values
 
 for i in range(len(train_y)):
-	train_y[i] =str(train_y[i])
+	train_y[i] = str(train_y[i])
 
-
-
-mul_lr = linear_model.LogisticRegression(multi_class='multinomial', solver='newton-cg',max_iter =1000)
+mul_lr = linear_model.LogisticRegression(multi_class='multinomial', solver='newton-cg', max_iter=1000)
 mul_lr.fit(mainarray, train_y)
 
-testdata =pd.read_csv('test dataset.csv')
+testdata = pd.read_csv('test dataset.csv')
 test = testdata.values
 
+# use one-hot encoding for gender values
 for i in range(len(test)):
-	if test[i][0]=="Male":
-		test[i][0]=1
+	if test[i][0] == "Male":
+		test[i][0] = 1
 	else:
-		test[i][0]=0
+		test[i][0] = 0
 
+df1 = pd.DataFrame(test)
 
-df1=pd.DataFrame(test)
-
-testdf =df1[[0,1,2,3,4,5,6]]
-maintestarray=testdf.values
+testdf = df1[[0, 1, 2, 3, 4, 5, 6]]
+maintestarray = testdf.values
 print(maintestarray)
 
 y_pred = mul_lr.predict(maintestarray)
-for i in range(len(y_pred)) :
-	y_pred[i]=str((y_pred[i]))
-DF = pd.DataFrame(y_pred,columns=['Predicted Personality'])
-DF.index=DF.index+1
+for i in range(len(y_pred)):
+	y_pred[i] = str((y_pred[i]))
+DF = pd.DataFrame(y_pred, columns=['Predicted Personality'])
+DF.index = DF.index + 1
 DF.index.names = ['Person No']
 DF.to_csv("output.csv")
-
